@@ -6,7 +6,7 @@ pygame.init()
 DISPLAY_SIZE = (pygame.display.Info().current_w, pygame.display.Info().current_h)
 print(DISPLAY_SIZE[0]) # print display width
 print(DISPLAY_SIZE[1]) # print display height
-WINDOW_SIZE = (int((DISPLAY_SIZE[0]*3)/4), int(( ((DISPLAY_SIZE[0]/16)*9) *3)/4)) # makes window 3/4 the width of the users display and keeps it 16:9 aspect ratio
+WINDOW_SIZE = (int((DISPLAY_SIZE[0] *7)/8), int(( ((DISPLAY_SIZE[0]/16)*9) *7)/8)) # makes window 3/4 the width of the users display and keeps it 16:9 aspect ratio
 print(WINDOW_SIZE[0]) # print window width
 print(WINDOW_SIZE[1]) # print window height
 game_screen = pygame.display.set_mode(tuple(WINDOW_SIZE))
@@ -15,6 +15,11 @@ clock = pygame.time.Clock()
 #player_sprite = pygame.image.load("sprites/player.png")
 
 
+
+# idea for screen scaling
+# instead of objects -> camera
+# do objects -> new_surface -> camera
+# this way the new_surface can be scale transformed before forcing camera boundaries
 
 class Camera(pygame.Surface):
     def __init__(self, width, height):
