@@ -9,7 +9,7 @@ print(DISPLAY_SIZE[1]) # print display height
 WINDOW_SIZE = (int((DISPLAY_SIZE[0] *7)/8), int(( ((DISPLAY_SIZE[0]/16)*9) *7)/8)) # makes window 3/4 the width of the users display and keeps it 16:9 aspect ratio
 print(WINDOW_SIZE[0]) # print window width
 print(WINDOW_SIZE[1]) # print window height
-game_display = pygame.display.set_mode(tuple(WINDOW_SIZE))
+game_screen = pygame.display.set_mode(tuple(WINDOW_SIZE))
 clock = pygame.time.Clock()
 
 #player_sprite = pygame.image.load("sprites/player.png")
@@ -24,20 +24,10 @@ clock = pygame.time.Clock()
 class Camera(pygame.Surface):
     def __init__(self, width, height):
         super().__init__((width, height))
-        #self.image = pygame.image.load("sprites/ground.png")
         self.position = [0, 0]
         self.rect = pygame.Rect((0, 0), (width, height))
 
 game_camera = Camera(WINDOW_SIZE[0], WINDOW_SIZE[1])
-
-class GameScreen(pygame.Surface):
-    def __init__(self, width, height):
-        super().__init__((width, height))
-        #self.image = pygame.image.load("sprites/ground.png")
-        self.position = [0, 0]
-        self.rect = pygame.Rect((0, 0), (width, height))
-
-game_screen = GameScreen(WINDOW_SIZE[0], WINDOW_SIZE[1])
 
 
 
@@ -49,6 +39,15 @@ class Ground(pygame.Surface, pygame.sprite.Sprite):
         self.rect = pygame.Rect(self.position[0], self.position[1], self.image.get_width(), self.image.get_height())
 
 ground = Ground()
+
+
+class World(pygame.Surface):
+    def __init__(self, width, height):
+        super().__init__((width, height))
+        self.position = [0, 0]
+        self.rect = pygame.Rect((0, 0), (width, height))
+
+game_world = World(ground.get_width(), ground.get_height())
 
 
 
@@ -90,56 +89,56 @@ class Crop(pygame.Surface, pygame.sprite.Sprite):
         super().__init__((self.image.get_width(), self.image.get_height()))
 
 
-
+# update world
+# move camera to new player position
+# update screen to show new camera position
 
 def update_camera_position(camera, player):
     player_x, player_y = player.position
     player_w, player_h = player.get_rect().size
     camera_w, camera_h = camera.get_rect().size
 
-    camera_x = player_x#+player_w/2 - camera_w/2
-    camera_y = player_y#+player_h/2 - camera_h/2
+    camera_x = player_x+player_w/2 - camera_w/2
+    camera_y = player_y+player_h/2 - camera_h/2
 
-    #if camera_x < 0:
-    #    camera.position[0] = 0
-    #elif camera_x > ground.rect.width - WINDOW_SIZE[0]:
-    #    camera.position[0] = ground.rect.width - WINDOW_SIZE[0]
-    #else:
-    #    camera.position[0] = camera_x
+    if camera_x < 0:
+        camera.position[0] = 0
+    elif camera_x > ground.rect.width - WINDOW_SIZE[0]:
+        camera.position[0] = ground.rect.width - WINDOW_SIZE[0]
+    else:
+        camera.position[0] = camera_x
     
-    #if camera_y < 0:
-    #    camera.position[1] = 0
-    #elif camera_y > ground.rect.height - WINDOW_SIZE[1]:
-    #    camera.position[1] = ground.rect.height - WINDOW_SIZE[1]
-    #else:
-    #    camera.position[1] = camera_y
+    if camera_y < 0:
+        camera.position[1] = 0
+    elif camera_y > ground.rect.height - WINDOW_SIZE[1]:
+        camera.position[1] = ground.rect.height - WINDOW_SIZE[1]
+    else:
+        camera.position[1] = camera_y
 
-# old update_camera method with new purpose
-def update_game_screen(game_screen, surfaces): # blit sprites onto surface that is then scaled up for whatever window size
-    game_screen.fill((150, 150, 150))
-    game_screen_x, game_screen_y = game_screen.position
+#def update_camera(camera:Camera, surfaces):
+#    camera.fill((150, 150, 150))
+#    camera_x, camera_y = camera.position
 
-    for surface in surfaces:
-        surface_x, surface_y = surface.position
+#    for surface in surfaces:
+#        surface_x, surface_y = surface.position
 
-        result = (surface_x-game_screen_x, surface_y-game_screen_y)
-        game_screen.blit(surface.image, result)
+#        result = (surface_x-camera_x, surface_y-camera_y)
+#        camera.blit(surface.image, result)
 
-def update_camera(camera, view_surface):
-    camera.fill((150, 150, 150))
-    camera_x, camera_y = camera.position
+def update_screen(game_screen:pygame.Surface, camera:Camera):
+    #screen.blit(pygame.transform.scale(camera, (camera.get_width()*2, camera.get_height()*2)), (0, 0))
+    game_screen.blit(camera, (0, 0))
 
-    camera.blit(pygame.transform.scale(view_surface, (view_surface.get_width()*2, camera.get_height()*2)), (0, 0))
+def update_world(world:World, camera:Camera, ground:Ground, surfaces:list):
+    world.fill((150, 150, 150))
+    sprites_on_screen = []
+
+    world.blit(ground, (0, 0))
 
     #for surface in surfaces:
     #    surface_x, surface_y = surface.position
 
-    #    result = (surface_x-camera_x, surface_y-camera_y)
-    #    camera.blit(surface.image, result)
-
-def update_display(display, camera):
-    #display.blit(pygame.transform.scale(camera, (camera.get_width()*2, camera.get_height()*2)), (0, 0))
-    display.blit(camera, (0, 0))
+    #    if surface_x
 
 
 
@@ -165,10 +164,10 @@ while True:
     
     player.update_position(player_update_x, player_update_y)
     
-    update_camera_position(game_screen, player)
-    update_game_screen(game_screen, [ground, player])
-    update_camera(game_camera, game_screen)
-    update_display(game_display, game_camera)
+    update_world(game_world, game_camera, ground, [player])
+    update_camera_position(game_camera, player)
+#    update_camera(game_camera, [ground, player])
+    update_screen(game_screen, game_camera)
 
     pygame.display.flip()
     clock.tick(60)
