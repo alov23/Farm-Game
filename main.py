@@ -93,52 +93,84 @@ class Crop(pygame.Surface, pygame.sprite.Sprite):
 # move camera to new player position
 # update screen to show new camera position
 
-def update_camera_position(camera, player):
-    player_x, player_y = player.position
+#def update_camera_position(camera:Camera, player:Player):
+#    player_x, player_y = player.position
+#    player_w, player_h = player.get_rect().size
+#    camera_w, camera_h = camera.get_rect().size
+#
+#    camera_x = player_x+player_w/2 - camera_w/2
+#    camera_y = player_y+player_h/2 - camera_h/2
+#
+#    if camera_x < 0:
+#        camera.position[0] = 0
+#    elif camera_x > ground.rect.width - WINDOW_SIZE[0]:
+#        camera.position[0] = ground.rect.width - WINDOW_SIZE[0]
+#    else:
+#        camera.position[0] = camera_x
+#    
+#    if camera_y < 0:
+#        camera.position[1] = 0
+#    elif camera_y > ground.rect.height - WINDOW_SIZE[1]:
+#        camera.position[1] = ground.rect.height - WINDOW_SIZE[1]
+#    else:
+#        camera.position[1] = camera_y
+
+
+
+
+def update_camera_position(camera:Camera, world:World, player:Player):
     player_w, player_h = player.get_rect().size
+    player_x, player_y = player.position
     camera_w, camera_h = camera.get_rect().size
 
-    camera_x = player_x+player_w/2 - camera_w/2
-    camera_y = player_y+player_h/2 - camera_h/2
+    world_x_offset, world_y_offset = (0, 0)
 
-    if camera_x < 0:
-        camera.position[0] = 0
-    elif camera_x > ground.rect.width - WINDOW_SIZE[0]:
-        camera.position[0] = ground.rect.width - WINDOW_SIZE[0]
-    else:
-        camera.position[0] = camera_x
-    
-    if camera_y < 0:
-        camera.position[1] = 0
-    elif camera_y > ground.rect.height - WINDOW_SIZE[1]:
-        camera.position[1] = ground.rect.height - WINDOW_SIZE[1]
-    else:
-        camera.position[1] = camera_y
+    camera.blit(world, (world_x_offset, world_y_offset))
+#
+#    camera_x = player_x+player_w/2 - camera_w/2
+#    camera_y = player_y+player_h/2 - camera_h/2
+#
+#    if camera_x < 0:
+#        camera.position[0] = 0
+#    elif camera_x > ground.rect.width - WINDOW_SIZE[0]:
+#        camera.position[0] = ground.rect.width - WINDOW_SIZE[0]
+#    else:
+#        camera.position[0] = camera_x
+#    
+#    if camera_y < 0:
+#        camera.position[1] = 0
+#    elif camera_y > ground.rect.height - WINDOW_SIZE[1]:
+#        camera.position[1] = ground.rect.height - WINDOW_SIZE[1]
+#    else:
+#        camera.position[1] = camera_y
+
+
+
 
 #def update_camera(camera:Camera, surfaces):
 #    camera.fill((150, 150, 150))
 #    camera_x, camera_y = camera.position
-
+#
 #    for surface in surfaces:
 #        surface_x, surface_y = surface.position
-
+#
 #        result = (surface_x-camera_x, surface_y-camera_y)
 #        camera.blit(surface.image, result)
 
-def update_screen(game_screen:pygame.Surface, camera:Camera):
+def update_screen(screen:pygame.Surface, camera:Camera):
     #screen.blit(pygame.transform.scale(camera, (camera.get_width()*2, camera.get_height()*2)), (0, 0))
-    game_screen.blit(camera, (0, 0))
+    screen.blit(camera, (0, 0))
 
 def update_world(world:World, camera:Camera, ground:Ground, surfaces:list):
     world.fill((150, 150, 150))
     sprites_on_screen = []
 
-    world.blit(ground, (0, 0))
+    world.blit(ground.image, (0, 0))
 
-    #for surface in surfaces:
-    #    surface_x, surface_y = surface.position
-
-    #    if surface_x
+#    for surface in surfaces:
+#        surface_x, surface_y = surface.position
+#
+#        if surface_x
 
 
 
@@ -165,7 +197,7 @@ while True:
     player.update_position(player_update_x, player_update_y)
     
     update_world(game_world, game_camera, ground, [player])
-    update_camera_position(game_camera, player)
+    update_camera_position(game_camera, game_world, player)
 #    update_camera(game_camera, [ground, player])
     update_screen(game_screen, game_camera)
 
