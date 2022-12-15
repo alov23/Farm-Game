@@ -55,7 +55,10 @@ class Player(pygame.Surface, pygame.sprite.Sprite):
     def __init__(self):
         self.image = pygame.image.load("sprites/player.png")
         super().__init__((self.image.get_width(), self.image.get_height()))
-        self.position = [WINDOW_SIZE[0] / 2, WINDOW_SIZE[1] / 2]
+        self.position = [
+            (ground.get_width() / 2) - (self.image.get_width() / 2),
+            (ground.get_height() / 2) - (self.image.get_height() / 2)
+        ]
         self.rect = pygame.Rect(self.position[0], self.position[1], self.image.get_width(), self.image.get_height())
         self.facing = 0 # self.facing == 0 means facing right, self.facing == 1 means facing left
     
@@ -119,11 +122,13 @@ class Crop(pygame.Surface, pygame.sprite.Sprite):
 
 
 def update_camera_position(camera:Camera, world:World, player:Player):
+    camera.fill((150, 150, 150))
+
     player_w, player_h = player.get_rect().size
     player_x, player_y = player.position
     camera_w, camera_h = camera.get_rect().size
 
-    world_x_offset, world_y_offset = (0, 0)
+    world_x_offset, world_y_offset = ((player_x / 2) + (player_w / 2), (player_y / 2) + (player_h / 2)) # use math to make offset have player in center
 
     camera.blit(world, (world_x_offset, world_y_offset))
 #
@@ -161,16 +166,16 @@ def update_screen(screen:pygame.Surface, camera:Camera):
     #screen.blit(pygame.transform.scale(camera, (camera.get_width()*2, camera.get_height()*2)), (0, 0))
     screen.blit(camera, (0, 0))
 
-def update_world(world:World, camera:Camera, ground:Ground, surfaces:list):
+def update_world(world:World, camera:Camera, ground:Ground, sprites:list):
     world.fill((150, 150, 150))
-    sprites_on_screen = []
+#    sprites_on_screen = []
 
     world.blit(ground.image, (0, 0))
 
-#    for surface in surfaces:
-#        surface_x, surface_y = surface.position
-#
-#        if surface_x
+    for sprite in sprites:
+        if sprite.rect.colliderect(camera.rect):
+            world.blit(sprite.image, (sprite.position[0], sprite.position[1]))
+#            sprites_on_screen.append(sprite)
 
 
 
@@ -196,10 +201,12 @@ while True:
     
     player.update_position(player_update_x, player_update_y)
     
-    update_world(game_world, game_camera, ground, [player])
     update_camera_position(game_camera, game_world, player)
+    update_world(game_world, game_camera, ground, [player])
 #    update_camera(game_camera, [ground, player])
     update_screen(game_screen, game_camera)
+
+    print(player.position)
 
     pygame.display.flip()
     clock.tick(60)
