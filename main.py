@@ -128,7 +128,12 @@ def update_camera_position(camera:Camera, world:World, player:Player):
     player_x, player_y = player.position
     camera_w, camera_h = camera.get_rect().size
 
-    world_x_offset, world_y_offset = ((player_x / 2) + (player_w / 2), (player_y / 2) + (player_h / 2)) # use math to make offset have player in center
+    #world_x_offset, world_y_offset = ((player_x / 2) + (player_w / 2), (player_y / 2) + (player_h / 2)) # use math to make offset have player in center
+    #world_x_offset, world_y_offset = (0, 0)
+    world_x_offset, world_y_offset = (# maybe have global variable of camera transformation size percent i.e. 1.0 as default, 2.0 two times zoom, then multiply all camera width and height values used here by it (also multiply values in update_screen())
+        ( (-(player_x)) - (player_w / 2) ) + (camera_w / 2),
+        ( (-(player_y)) - (player_h / 2) ) + (camera_h / 2)
+        )
 
     camera.blit(world, (world_x_offset, world_y_offset))
 #
@@ -163,8 +168,8 @@ def update_camera_position(camera:Camera, world:World, player:Player):
 #        camera.blit(surface.image, result)
 
 def update_screen(screen:pygame.Surface, camera:Camera):
-    #screen.blit(pygame.transform.scale(camera, (camera.get_width()*2, camera.get_height()*2)), (0, 0))
-    screen.blit(camera, (0, 0))
+    screen.blit(pygame.transform.scale(camera, (camera.get_width()*2, camera.get_height()*2)), (-(camera.get_width()/2), -(camera.get_height()/2)))
+    #screen.blit(camera, (0, 0))
 
 def update_world(world:World, camera:Camera, ground:Ground, sprites:list):
     world.fill((150, 150, 150))
@@ -178,6 +183,8 @@ def update_world(world:World, camera:Camera, ground:Ground, sprites:list):
 #            sprites_on_screen.append(sprite)
 
 
+movementSpeedVariable = 4
+movementSpeedRunMultiplier = 2
 
 while True:
     player_update_x, player_update_y = 0, 0
@@ -188,16 +195,16 @@ while True:
             sys.exit()
     pressed_keys = pygame.key.get_pressed()
     if pressed_keys[K_w]:
-        player_update_y -= 4
+        player_update_y -= movementSpeedVariable
     if pressed_keys[K_s]:
-        player_update_y += 4
+        player_update_y += movementSpeedVariable
     if pressed_keys[K_a]:
-        player_update_x -= 4
+        player_update_x -= movementSpeedVariable
     if pressed_keys[K_d]:
-        player_update_x += 4
+        player_update_x += movementSpeedVariable
     if pressed_keys[K_LSHIFT]:
-        player_update_x *= 2
-        player_update_y *= 2
+        player_update_x *= movementSpeedRunMultiplier
+        player_update_y *= movementSpeedRunMultiplier
     
     player.update_position(player_update_x, player_update_y)
     
