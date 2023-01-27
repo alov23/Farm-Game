@@ -140,6 +140,9 @@ def update_camera_position(camera:Camera, world:World, player:Player):
 #    camera_x = player_x+player_w/2 - camera_w/2
 #    camera_y = player_y+player_h/2 - camera_h/2
 #
+#    ------------------------------------- change all this to change world_offset variables instead of setting camera.position -------------------------------------
+#    this stuff makes it so the camera wont show stuff thats out of bounds
+#
 #    if camera_x < 0:
 #        camera.position[0] = 0
 #    elif camera_x > ground.rect.width - WINDOW_SIZE[0]:
