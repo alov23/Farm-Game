@@ -2,6 +2,8 @@ import sys
 import pygame
 from pygame.locals import *
 
+import config
+
 pygame.init()
 DISPLAY_SIZE = (pygame.display.Info().current_w, pygame.display.Info().current_h)
 print(DISPLAY_SIZE[0]) # print display width
@@ -119,8 +121,6 @@ class Crop(pygame.Surface, pygame.sprite.Sprite):
 #        camera.position[1] = camera_y
 
 
-
-
 def update_camera_position(camera:Camera, world:World, player:Player):
     camera.fill((150, 150, 150))
 
@@ -171,7 +171,12 @@ def update_camera_position(camera:Camera, world:World, player:Player):
 #        camera.blit(surface.image, result)
 
 def update_screen(screen:pygame.Surface, camera:Camera):
-    screen.blit(pygame.transform.scale(camera, (camera.get_width()*2, camera.get_height()*2)), (-(camera.get_width()/2), -(camera.get_height()/2)))
+    #                                                                                                                                            amount to move camera surface to the right (so... make it negative)
+    screen.blit(
+        pygame.transform.scale(camera, (camera.get_width()*config.CAMERA_ZOOM_LEVEL, camera.get_height()*config.CAMERA_ZOOM_LEVEL)),
+        (-(camera.get_width() / 0.65), -(camera.get_height() / 0.65))
+        )
+        #-((camera.get_width()/CAMERA_ZOOM_LEVEL), -(camera.get_height()/CAMERA_ZOOM_LEVEL))
     #screen.blit(camera, (0, 0))
 
 def update_world(world:World, camera:Camera, ground:Ground, sprites:list):
