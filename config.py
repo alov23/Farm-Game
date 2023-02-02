@@ -5,7 +5,8 @@ UPDATE_SCREEN_DIV_DENOM = 2
 ZOOM_LEVELS = [#(1, 0),
     (2, 2),
     (3, 1),
-    (4, (2/3))
+    (4, (2/3)),
+    (5, (1/2))
 ]
 
 MOVEMENT_SPEED_VARIABLE = 4

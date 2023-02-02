@@ -206,7 +206,7 @@ while True:
             if event.key == K_LEFT:
                 CURRENT_ZOOM_LEVEL -= 1
                 if CURRENT_ZOOM_LEVEL <= -1:
-                    CURRENT_ZOOM_LEVEL = len(config.ZOOM_LEVELS)
+                    CURRENT_ZOOM_LEVEL = len(config.ZOOM_LEVELS)-1
                 config.CAMERA_ZOOM_LEVEL = config.ZOOM_LEVELS[CURRENT_ZOOM_LEVEL][0]
                 config.UPDATE_SCREEN_DIV_DENOM = config.ZOOM_LEVELS[CURRENT_ZOOM_LEVEL][1]
             if event.key == K_RIGHT:
