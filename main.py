@@ -98,27 +98,14 @@ class Crop(pygame.Surface, pygame.sprite.Sprite):
 # move camera to new player position
 # update screen to show new camera position
 
-#def update_camera_position(camera:Camera, player:Player):
-#    player_x, player_y = player.position
-#    player_w, player_h = player.get_rect().size
-#    camera_w, camera_h = camera.get_rect().size
-#
-#    camera_x = player_x+player_w/2 - camera_w/2
-#    camera_y = player_y+player_h/2 - camera_h/2
-#
-#    if camera_x < 0:
-#        camera.position[0] = 0
-#    elif camera_x > ground.rect.width - WINDOW_SIZE[0]:
-#        camera.position[0] = ground.rect.width - WINDOW_SIZE[0]
-#    else:
-#        camera.position[0] = camera_x
-#    
-#    if camera_y < 0:
-#        camera.position[1] = 0
-#    elif camera_y > ground.rect.height - WINDOW_SIZE[1]:
-#        camera.position[1] = ground.rect.height - WINDOW_SIZE[1]
-#    else:
-#        camera.position[1] = camera_y
+def set_zoom_level(newZoomLevel:int):
+    pass
+
+def zoom_in(zoomAmount:int):
+    pass
+
+def zoom_out(zoomAmount:int):
+    pass
 
 
 def update_camera_position(camera:Camera, world:World, player:Player):
