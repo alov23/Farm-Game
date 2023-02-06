@@ -98,13 +98,20 @@ class Crop(pygame.Surface, pygame.sprite.Sprite):
 # move camera to new player position
 # update screen to show new camera position
 
-def set_zoom_level(newZoomLevel:int):
+def set_zoom_level(camera:Camera, newZoomLevel:int):
+    if (newZoomLevel > 1):
+        # -(camera.get_width() / config.UPDATE_SCREEN_DIV_DENOM)
+        # -(camera.get_height() / config.UPDATE_SCREEN_DIV_DENOM)
+        config.CAMERA_AREA_MODIFIER = -(camera.get_width() / 2/(newZoomLevel-1))
+    elif (newZoomLevel == 1):
+        return 0
+    else:
+        Exception(f"Can not have {newZoomLevel}x zoom")
+
+def zoom_in(camera:Camera, zoomAmount:int):
     pass
 
-def zoom_in(zoomAmount:int):
-    pass
-
-def zoom_out(zoomAmount:int):
+def zoom_out(camera:Camera, zoomAmount:int):
     pass
 
 
@@ -146,24 +153,13 @@ def update_camera_position(camera:Camera, world:World, player:Player):
 
 
 
-
-#def update_camera(camera:Camera, surfaces):
-#    camera.fill((150, 150, 150))
-#    camera_x, camera_y = camera.position
-#
-#    for surface in surfaces:
-#        surface_x, surface_y = surface.position
-#
-#        result = (surface_x-camera_x, surface_y-camera_y)
-#        camera.blit(surface.image, result)
-
 def update_screen(screen:pygame.Surface, camera:Camera):
     #print(camera.get_width())
     print(camera.get_width() / 1, end=" - ")
     print((-(camera.get_width() / config.UPDATE_SCREEN_DIV_DENOM), -(camera.get_height() / config.UPDATE_SCREEN_DIV_DENOM)), end=" - ")
     #                                                                                                                                            amount to move camera surface to the right (so... make it negative)
     screen.blit(
-        pygame.transform.scale(camera, (camera.get_width()*config.CAMERA_ZOOM_LEVEL, camera.get_height()*config.CAMERA_ZOOM_LEVEL)),
+        pygame.transform.scale(camera, (camera.get_width()*config.CAMERA_ZOOM_AMOUNT, camera.get_height()*config.CAMERA_ZOOM_AMOUNT)),
         (-(camera.get_width() / config.UPDATE_SCREEN_DIV_DENOM), -(camera.get_height() / config.UPDATE_SCREEN_DIV_DENOM))
         )
         #-((camera.get_width()/CAMERA_ZOOM_LEVEL), -(camera.get_height()/CAMERA_ZOOM_LEVEL))
@@ -194,13 +190,13 @@ while True:
                 CURRENT_ZOOM_LEVEL -= 1
                 if CURRENT_ZOOM_LEVEL <= -1:
                     CURRENT_ZOOM_LEVEL = len(config.ZOOM_LEVELS)-1
-                config.CAMERA_ZOOM_LEVEL = config.ZOOM_LEVELS[CURRENT_ZOOM_LEVEL][0]
+                config.CAMERA_ZOOM_AMOUNT = config.ZOOM_LEVELS[CURRENT_ZOOM_LEVEL][0]
                 config.UPDATE_SCREEN_DIV_DENOM = config.ZOOM_LEVELS[CURRENT_ZOOM_LEVEL][1]
             if event.key == K_RIGHT:
                 CURRENT_ZOOM_LEVEL += 1
                 if CURRENT_ZOOM_LEVEL >= len(config.ZOOM_LEVELS):
                     CURRENT_ZOOM_LEVEL = 0
-                config.CAMERA_ZOOM_LEVEL = config.ZOOM_LEVELS[CURRENT_ZOOM_LEVEL][0]
+                config.CAMERA_ZOOM_AMOUNT = config.ZOOM_LEVELS[CURRENT_ZOOM_LEVEL][0]
                 config.UPDATE_SCREEN_DIV_DENOM = config.ZOOM_LEVELS[CURRENT_ZOOM_LEVEL][1]
     pressed_keys = pygame.key.get_pressed()
     if pressed_keys[K_w]:
@@ -219,9 +215,9 @@ while True:
     if pressed_keys[K_o]:
         config.UPDATE_SCREEN_DIV_DENOM -= 0.01
     if pressed_keys[K_k]:
-        config.CAMERA_ZOOM_LEVEL = 2
+        config.CAMERA_ZOOM_AMOUNT = 2
     if pressed_keys[K_l]:
-        config.CAMERA_ZOOM_LEVEL = 4
+        config.CAMERA_ZOOM_AMOUNT = 4
     
     player.update_position(player_update_x, player_update_y)
     
@@ -231,7 +227,7 @@ while True:
     update_screen(game_screen, game_camera)
 
     #print(player.position)
-    print(f"zoom: {config.CAMERA_ZOOM_LEVEL} - div: {config.UPDATE_SCREEN_DIV_DENOM}")
+    print(f"zoom: {config.CAMERA_ZOOM_AMOUNT} - div: {config.UPDATE_SCREEN_DIV_DENOM}")
 
     pygame.display.flip()
     clock.tick(60)
