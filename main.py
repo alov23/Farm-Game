@@ -111,10 +111,10 @@ def set_zoom_level(camera:Camera, newZoomLevel:int):
         raise Exception(f"Can not have {newZoomLevel}x zoom")
 
 def zoom_in(camera:Camera, zoomAmount:int):
-    pass
+    set_zoom_level(camera, config.CAMERA_ZOOM_AMOUNT + zoomAmount)
 
 def zoom_out(camera:Camera, zoomAmount:int):
-    pass
+    set_zoom_level(camera, config.CAMERA_ZOOM_AMOUNT - zoomAmount)
 
 
 def update_camera_position(camera:Camera, world:World, player:Player):
@@ -159,12 +159,10 @@ def update_screen(screen:pygame.Surface, camera:Camera):
     #print(camera.get_width())
     print(camera.get_width() / 1, end=" - ")
     print(f"({config.CAMERA_AREA_WIDTH_MODIFIER}, {config.CAMERA_AREA_HEIGHT_MODIFIER})", end=" - ")
-    #                                                                                                                                            amount to move camera surface to the right (so... make it negative)
     screen.blit(
         pygame.transform.scale(camera, (camera.get_width()*config.CAMERA_ZOOM_AMOUNT, camera.get_height()*config.CAMERA_ZOOM_AMOUNT)),
         (config.CAMERA_AREA_WIDTH_MODIFIER, config.CAMERA_AREA_HEIGHT_MODIFIER)
         )
-        #-((camera.get_width()/CAMERA_ZOOM_LEVEL), -(camera.get_height()/CAMERA_ZOOM_LEVEL))
     #screen.blit(camera, (0, 0))
 
 def update_world(world:World, camera:Camera, ground:Ground, sprites:list):
@@ -187,17 +185,19 @@ while True:
             sys.exit()
         if event.type == KEYDOWN:
             if event.key == K_LEFT:
-                CURRENT_ZOOM_LEVEL -= 1
-                if CURRENT_ZOOM_LEVEL <= -1:
-                    CURRENT_ZOOM_LEVEL = len(config.ZOOM_LEVELS)-1
-                config.CAMERA_ZOOM_AMOUNT = config.ZOOM_LEVELS[CURRENT_ZOOM_LEVEL][0]
-                config.UPDATE_SCREEN_DIV_DENOM = config.ZOOM_LEVELS[CURRENT_ZOOM_LEVEL][1]
+                zoom_out(game_camera, 1)
+                #CURRENT_ZOOM_LEVEL -= 1
+                #if CURRENT_ZOOM_LEVEL <= -1:
+                #    CURRENT_ZOOM_LEVEL = len(config.ZOOM_LEVELS)-1
+                #config.CAMERA_ZOOM_AMOUNT = config.ZOOM_LEVELS[CURRENT_ZOOM_LEVEL][0]
+                #config.UPDATE_SCREEN_DIV_DENOM = config.ZOOM_LEVELS[CURRENT_ZOOM_LEVEL][1]
             if event.key == K_RIGHT:
-                CURRENT_ZOOM_LEVEL += 1
-                if CURRENT_ZOOM_LEVEL >= len(config.ZOOM_LEVELS):
-                    CURRENT_ZOOM_LEVEL = 0
-                config.CAMERA_ZOOM_AMOUNT = config.ZOOM_LEVELS[CURRENT_ZOOM_LEVEL][0]
-                config.UPDATE_SCREEN_DIV_DENOM = config.ZOOM_LEVELS[CURRENT_ZOOM_LEVEL][1]
+                zoom_in(game_camera, 1)
+                #CURRENT_ZOOM_LEVEL += 1
+                #if CURRENT_ZOOM_LEVEL >= len(config.ZOOM_LEVELS):
+                #    CURRENT_ZOOM_LEVEL = 0
+                #config.CAMERA_ZOOM_AMOUNT = config.ZOOM_LEVELS[CURRENT_ZOOM_LEVEL][0]
+                #config.UPDATE_SCREEN_DIV_DENOM = config.ZOOM_LEVELS[CURRENT_ZOOM_LEVEL][1]
     pressed_keys = pygame.key.get_pressed()
     if pressed_keys[K_w]:
         player_update_y -= config.MOVEMENT_SPEED_VARIABLE
@@ -210,14 +210,6 @@ while True:
     if pressed_keys[K_LSHIFT]:
         player_update_x *= config.MOVEMENT_SPEED_RUN_MULTIPLIER
         player_update_y *= config.MOVEMENT_SPEED_RUN_MULTIPLIER
-    if pressed_keys[K_i]:
-        config.UPDATE_SCREEN_DIV_DENOM += 0.01
-    if pressed_keys[K_o]:
-        config.UPDATE_SCREEN_DIV_DENOM -= 0.01
-    if pressed_keys[K_k]:
-        config.CAMERA_ZOOM_AMOUNT = 2
-    if pressed_keys[K_l]:
-        config.CAMERA_ZOOM_AMOUNT = 4
     
     player.update_position(player_update_x, player_update_y)
     
@@ -227,7 +219,7 @@ while True:
     update_screen(game_screen, game_camera)
 
     #print(player.position)
-    print(f"zoom: {config.CAMERA_ZOOM_AMOUNT} - div: {config.UPDATE_SCREEN_DIV_DENOM}")
+    print(f"zoom: {config.CAMERA_ZOOM_AMOUNT}")
 
     pygame.display.flip()
     clock.tick(60)
