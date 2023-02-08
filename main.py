@@ -100,13 +100,15 @@ class Crop(pygame.Surface, pygame.sprite.Sprite):
 
 def set_zoom_level(camera:Camera, newZoomLevel:int):
     if (newZoomLevel > 1):
-        # -(camera.get_width() / config.UPDATE_SCREEN_DIV_DENOM)
-        # -(camera.get_height() / config.UPDATE_SCREEN_DIV_DENOM)
-        config.CAMERA_AREA_MODIFIER = -(camera.get_width() / 2/(newZoomLevel-1))
+        config.CAMERA_ZOOM_AMOUNT = newZoomLevel
+        config.CAMERA_AREA_WIDTH_MODIFIER = -(camera.get_width() / (2/(newZoomLevel-1)))
+        config.CAMERA_AREA_HEIGHT_MODIFIER = -(camera.get_height() / (2/(newZoomLevel-1)))
     elif (newZoomLevel == 1):
-        return 0
+        config.CAMERA_ZOOM_AMOUNT = newZoomLevel
+        config.CAMERA_AREA_WIDTH_MODIFIER = 0
+        config.CAMERA_AREA_HEIGHT_MODIFIER = 0
     else:
-        Exception(f"Can not have {newZoomLevel}x zoom")
+        raise Exception(f"Can not have {newZoomLevel}x zoom")
 
 def zoom_in(camera:Camera, zoomAmount:int):
     pass
@@ -156,11 +158,11 @@ def update_camera_position(camera:Camera, world:World, player:Player):
 def update_screen(screen:pygame.Surface, camera:Camera):
     #print(camera.get_width())
     print(camera.get_width() / 1, end=" - ")
-    print((-(camera.get_width() / config.UPDATE_SCREEN_DIV_DENOM), -(camera.get_height() / config.UPDATE_SCREEN_DIV_DENOM)), end=" - ")
+    print(f"({config.CAMERA_AREA_WIDTH_MODIFIER}, {config.CAMERA_AREA_HEIGHT_MODIFIER})", end=" - ")
     #                                                                                                                                            amount to move camera surface to the right (so... make it negative)
     screen.blit(
         pygame.transform.scale(camera, (camera.get_width()*config.CAMERA_ZOOM_AMOUNT, camera.get_height()*config.CAMERA_ZOOM_AMOUNT)),
-        (-(camera.get_width() / config.UPDATE_SCREEN_DIV_DENOM), -(camera.get_height() / config.UPDATE_SCREEN_DIV_DENOM))
+        (config.CAMERA_AREA_WIDTH_MODIFIER, config.CAMERA_AREA_HEIGHT_MODIFIER)
         )
         #-((camera.get_width()/CAMERA_ZOOM_LEVEL), -(camera.get_height()/CAMERA_ZOOM_LEVEL))
     #screen.blit(camera, (0, 0))
@@ -175,8 +177,6 @@ def update_world(world:World, camera:Camera, ground:Ground, sprites:list):
         if sprite.rect.colliderect(camera.rect):
             world.blit(sprite.image, (sprite.position[0], sprite.position[1]))
 #            sprites_on_screen.append(sprite)
-
-CURRENT_ZOOM_LEVEL = 0
 
 while True:
     player_update_x, player_update_y = 0, 0
