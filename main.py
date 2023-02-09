@@ -26,12 +26,19 @@ clock = pygame.time.Clock()
 class Camera(pygame.Surface):
     def __init__(self, width, height):
         super().__init__((width, height))
-        self.position = [0, 0]
+        #self.position = [0, 0]
         self.rect = pygame.Rect((0, 0), (width, height))
 
 game_camera = Camera(WINDOW_SIZE[0], WINDOW_SIZE[1])
 
+scaled_game_camera = Camera(WINDOW_SIZE[0], WINDOW_SIZE[1])
 
+def scale(temp_surf:pygame.Surface, new_width:int, new_height:int):
+    scaled_game_camera = Camera(new_width, new_height)
+    pygame.transform.scale(temp_surf, (new_width, new_height), scaled_game_camera)
+    print(f"(inside scale) -> {scaled_game_camera.get_height()}")
+    #scaled_game_camera.rect = pygame.Rect((0, 0), (scaled_game_camera.get_width(), scaled_game_camera.get_height()))
+    return scaled_game_camera
 
 class Ground(pygame.Surface, pygame.sprite.Sprite):
     def __init__(self):
@@ -103,10 +110,12 @@ def set_zoom_level(camera:Camera, newZoomLevel:int):
         config.CAMERA_ZOOM_AMOUNT = newZoomLevel
         config.CAMERA_AREA_WIDTH_MODIFIER = -(camera.get_width() / (2/(newZoomLevel-1)))
         config.CAMERA_AREA_HEIGHT_MODIFIER = -(camera.get_height() / (2/(newZoomLevel-1)))
+        print((scale(camera, camera.get_width() / config.CAMERA_ZOOM_AMOUNT, camera.get_height() / config.CAMERA_ZOOM_AMOUNT)).get_height())
     elif (newZoomLevel == 1):
         config.CAMERA_ZOOM_AMOUNT = newZoomLevel
         config.CAMERA_AREA_WIDTH_MODIFIER = 0
         config.CAMERA_AREA_HEIGHT_MODIFIER = 0
+        scale(camera, WINDOW_SIZE[0], WINDOW_SIZE[1])
     else:
         raise Exception(f"Can not have {newZoomLevel}x zoom")
 
@@ -158,12 +167,12 @@ def update_camera_position(camera:Camera, world:World, player:Player):
 def update_screen(screen:pygame.Surface, camera:Camera):
     #print(camera.get_width())
     print(camera.get_width() / 1, end=" - ")
-    print(f"({config.CAMERA_AREA_WIDTH_MODIFIER}, {config.CAMERA_AREA_HEIGHT_MODIFIER})", end=" - ")
-    screen.blit(
-        pygame.transform.scale(camera, (camera.get_width()*config.CAMERA_ZOOM_AMOUNT, camera.get_height()*config.CAMERA_ZOOM_AMOUNT)),
-        (config.CAMERA_AREA_WIDTH_MODIFIER, config.CAMERA_AREA_HEIGHT_MODIFIER)
-        )
-    #screen.blit(camera, (0, 0))
+    print(f"({camera.get_width()} -> ({scaled_game_camera.get_width()}), {camera.get_height()} -> ({scaled_game_camera.get_height()}))", end=" - ")
+    #screen.blit(
+    #    pygame.transform.scale(camera, (camera.get_width()*config.CAMERA_ZOOM_AMOUNT, camera.get_height()*config.CAMERA_ZOOM_AMOUNT)),
+    #    (config.CAMERA_AREA_WIDTH_MODIFIER, config.CAMERA_AREA_HEIGHT_MODIFIER)
+    #    )
+    screen.blit(camera, (0, 0))
 
 def update_world(world:World, camera:Camera, ground:Ground, sprites:list):
     world.fill((150, 150, 150))
@@ -213,13 +222,13 @@ while True:
     
     player.update_position(player_update_x, player_update_y)
     
-    update_camera_position(game_camera, game_world, player)
-    update_world(game_world, game_camera, ground, [player])
+    update_camera_position(scaled_game_camera, game_world, player)
+    update_world(game_world, scaled_game_camera, ground, [player])
 #    update_camera(game_camera, [ground, player])
-    update_screen(game_screen, game_camera)
+    update_screen(game_screen, scaled_game_camera)
 
     #print(player.position)
-    print(f"zoom: {config.CAMERA_ZOOM_AMOUNT}")
+    print(f"zoom: {config.CAMERA_ZOOM_AMOUNT} - ({config.CAMERA_AREA_WIDTH_MODIFIER}, {config.CAMERA_AREA_HEIGHT_MODIFIER}) - ({scaled_game_camera.get_width()}, {scaled_game_camera.get_height()})")
 
     pygame.display.flip()
     clock.tick(60)
