@@ -33,12 +33,13 @@ game_camera = Camera(WINDOW_SIZE[0], WINDOW_SIZE[1])
 
 scaled_game_camera = Camera(WINDOW_SIZE[0], WINDOW_SIZE[1])
 
-def scale(temp_surf:pygame.Surface, new_width:int, new_height:int):
+def scale(old_surface:pygame.Surface, new_width:int, new_height:int):
+    global scaled_game_camera
     scaled_game_camera = Camera(new_width, new_height)
-    pygame.transform.scale(temp_surf, (new_width, new_height), scaled_game_camera)
+    pygame.transform.scale(old_surface, (new_width, new_height), scaled_game_camera)
     print(f"(inside scale) -> {scaled_game_camera.get_height()}")
     #scaled_game_camera.rect = pygame.Rect((0, 0), (scaled_game_camera.get_width(), scaled_game_camera.get_height()))
-    return scaled_game_camera
+    #return scaled_game_camera
 
 class Ground(pygame.Surface, pygame.sprite.Sprite):
     def __init__(self):
@@ -110,7 +111,7 @@ def set_zoom_level(camera:Camera, newZoomLevel:int):
         config.CAMERA_ZOOM_AMOUNT = newZoomLevel
         config.CAMERA_AREA_WIDTH_MODIFIER = -(camera.get_width() / (2/(newZoomLevel-1)))
         config.CAMERA_AREA_HEIGHT_MODIFIER = -(camera.get_height() / (2/(newZoomLevel-1)))
-        print((scale(camera, camera.get_width() / config.CAMERA_ZOOM_AMOUNT, camera.get_height() / config.CAMERA_ZOOM_AMOUNT)).get_height())
+        scale(camera, camera.get_width() / config.CAMERA_ZOOM_AMOUNT, camera.get_height() / config.CAMERA_ZOOM_AMOUNT)
     elif (newZoomLevel == 1):
         config.CAMERA_ZOOM_AMOUNT = newZoomLevel
         config.CAMERA_AREA_WIDTH_MODIFIER = 0
