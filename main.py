@@ -187,6 +187,7 @@ def update_world(world:World, camera:Camera, ground:Ground, sprites:list):
 
     for sprite in sprites:
         if sprite.rect.colliderect(camera.rect):
+            print(sprite.image)
             world.blit(sprite.image, (sprite.position[0], sprite.position[1]))
 #            sprites_on_screen.append(sprite)
 
@@ -229,11 +230,12 @@ while True:
     
     update_camera_position(scaled_game_camera, game_world, player)
     update_world(game_world, scaled_game_camera, ground, [player])
+    #game_world.blit(player.image, (camera.position[0], camera.position[1]))
 #    update_camera(game_camera, [ground, player])
     update_screen(game_screen, scaled_game_camera)
 
     #print(player.position)
-    print(f"zoom: {config.CAMERA_ZOOM_AMOUNT} - ({config.CAMERA_AREA_WIDTH_MODIFIER}, {config.CAMERA_AREA_HEIGHT_MODIFIER}) - ({scaled_game_camera.get_width()}, {scaled_game_camera.get_height()})", end="")
+    print(f"zoom: {config.CAMERA_ZOOM_AMOUNT} - ({config.CAMERA_AREA_WIDTH_MODIFIER}, {config.CAMERA_AREA_HEIGHT_MODIFIER})", end="")
 
     if (scaled_game_camera.get_width() % ((DISPLAY_SIZE[0] *7)/8)/config.CAMERA_ZOOM_AMOUNT == 0 and scaled_game_camera.get_height() % (( ((DISPLAY_SIZE[0]/16)*9) *7)/8)/config.CAMERA_ZOOM_AMOUNT == 0):
         print(f" - true!")
