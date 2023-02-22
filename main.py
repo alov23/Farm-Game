@@ -186,9 +186,9 @@ def update_world(world:World, camera:Camera, ground:Ground, sprites:list):
     world.blit(ground.image, (0, 0))
 
     for sprite in sprites:
-        if sprite.rect.colliderect(camera.rect):
-            print(sprite.image)
-            world.blit(sprite.image, (sprite.position[0], sprite.position[1]))
+        #if sprite.rect.colliderect(camera.rect): !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! NEED TO FIX SOMEHOW !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        print(sprite == player)
+        world.blit(sprite.image, (sprite.position[0], sprite.position[1]))
 #            sprites_on_screen.append(sprite)
 
 while True:
@@ -303,7 +303,7 @@ while True:
 #          1) 2nd stage - x plant age to reach
 #          2) second stage sprite path
 #      etc...
-#  9) plant age growth per season
+#  9) plant amount of time to age per season
 #      1) spring
 #      2) summer
 #      3) fall
