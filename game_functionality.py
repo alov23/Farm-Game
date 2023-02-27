@@ -31,9 +31,6 @@ def scale(old_surface:pygame.Surface, new_width:int, new_height:int):
     global scaled_game_camera
     scaled_game_camera = Camera(new_width, new_height)
     pygame.transform.scale(old_surface, (new_width, new_height), scaled_game_camera)
-    #print(f"(inside scale) -> {scaled_game_camera.get_height()}")
-    #scaled_game_camera.rect = pygame.Rect((0, 0), (scaled_game_camera.get_width(), scaled_game_camera.get_height()))
-    #return scaled_game_camera
 
 class Ground(pygame.Surface, pygame.sprite.Sprite):
     def __init__(self):
@@ -88,12 +85,6 @@ class Player(pygame.Surface, pygame.sprite.Sprite):
             self.position[1] += update_y
 
 player = Player()
-
-
-class Crop(pygame.Surface, pygame.sprite.Sprite):
-    def __init__(self, crop_name, crop_image_name):
-        self.image = pygame.image.load(f"sprites/crops/{crop_image_name}.png")
-        super().__init__((self.image.get_width(), self.image.get_height()))
 
 
 # update world
