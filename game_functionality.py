@@ -119,17 +119,22 @@ def update_camera_position(camera:Camera, world:World, player:Player):
     player_x, player_y = player.position
     camera_w, camera_h = camera.get_rect().size
 
-    #world_x_offset, world_y_offset = ((player_x / 2) + (player_w / 2), (player_y / 2) + (player_h / 2)) # use math to make offset have player in center
     #world_x_offset, world_y_offset = (0, 0)
-    world_x_offset, world_y_offset = (# maybe have global variable of camera transformation size percent i.e. 1.0 as default, 2.0 two times zoom, then multiply all camera width and height values used here by it (also multiply values in update_screen())
+    # the lower the number the farther it moves the camera from the top left
+    world_x_offset, world_y_offset = (
         ( (-(player_x)) - (player_w / 2) ) + (camera_w / 2),
         ( (-(player_y)) - (player_h / 2) ) + (camera_h / 2)
         )
+    
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    print(f"({world_x_offset}, {world_y_offset}) - {scaled_game_camera.rect.size} - {world_x_offset + scaled_game_camera.rect.size[0]}")
+    if world_x_offset > 0:
+        world_x_offset = 0
+    #elif world_x_offset + scaled_game_camera.rect.size[0] < ground.rect.width:
+    #    world_x_offset = ground.rect.width - scaled_game_camera.rect.size[0]
+
 
     camera.blit(world, (world_x_offset, world_y_offset))
-#
-#    camera_x = player_x+player_w/2 - camera_w/2
-#    camera_y = player_y+player_h/2 - camera_h/2
 #
 #    ------------------------------------- change all this to change world_offset variables instead of setting camera.position -------------------------------------
 #    this stuff makes it so the camera wont show stuff thats out of bounds
@@ -173,9 +178,20 @@ def update_world(world:World, camera:Camera, ground:Ground, sprites:list):
     for sprite in sprites:
         #if sprite.rect.colliderect(camera.rect): !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! NEED TO FIX SOMEHOW !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         #print(sprite == player)
-        print(f"{camera.rect.center} - {camera.position}")
+        #print(f"{camera.position} - {camera.rect.size}")
         world.blit(sprite.image, (sprite.position[0], sprite.position[1]))
 #            sprites_on_screen.append(sprite)
+
+# adds (key, function) tuple to a list
+# if the key is held/pressed the function will run once
+def add_key_held_function(key, function_to_add):
+    pass
+
+# adds (key, function) tuple to a list
+# if the key is held/pressed the function will run once EVERY FRAME
+def add_key_held_repeating_function(key, function_to_add):
+    pass
+
 
 while True:
     player_update_x, player_update_y = 0, 0
@@ -223,7 +239,7 @@ while True:
 #    update_camera(game_camera, [ground, player])
     update_screen(game_screen, scaled_game_camera)
 
-    #print(player.position)
+    #print(scaled_game_camera.position)
     #print(f"zoom: {config.CAMERA_ZOOM_AMOUNT} - ({config.CAMERA_AREA_WIDTH_MODIFIER}, {config.CAMERA_AREA_HEIGHT_MODIFIER})", end="")
 
     #if (scaled_game_camera.get_width() % ((DISPLAY_SIZE[0] *7)/8)/config.CAMERA_ZOOM_AMOUNT == 0 and scaled_game_camera.get_height() % (( ((DISPLAY_SIZE[0]/16)*9) *7)/8)/config.CAMERA_ZOOM_AMOUNT == 0):
