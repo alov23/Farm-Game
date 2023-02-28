@@ -87,10 +87,6 @@ class Player(pygame.Surface, pygame.sprite.Sprite):
 player = Player()
 
 
-# update world
-# move camera to new player position
-# update screen to show new camera position
-
 def set_zoom_level(camera:Camera, newZoomLevel:int):
     if (newZoomLevel > 1):
         config.CAMERA_ZOOM_AMOUNT = newZoomLevel
@@ -126,8 +122,8 @@ def update_camera_position(camera:Camera, world:World, player:Player):
         ( (-(player_y)) - (player_h / 2) ) + (camera_h / 2)
         )
     
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    print(f"({world_x_offset}, {world_y_offset}) - {scaled_game_camera.rect.size} - {world_x_offset + scaled_game_camera.rect.size[0]}")
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    print(f"({world_x_offset}, {world_y_offset}) - {scaled_game_camera.rect.size} - {world_x_offset + scaled_game_camera.rect.size[0]} - {ground.rect.size}")
     if world_x_offset > 0:
         world_x_offset = 0
     #elif world_x_offset + scaled_game_camera.rect.size[0] < ground.rect.width:
@@ -176,20 +172,18 @@ def update_world(world:World, camera:Camera, ground:Ground, sprites:list):
     world.blit(ground.image, (0, 0))
 
     for sprite in sprites:
-        #if sprite.rect.colliderect(camera.rect): !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! NEED TO FIX SOMEHOW !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        #print(sprite == player)
-        #print(f"{camera.position} - {camera.rect.size}")
+        #if sprite.rect.colliderect(camera.rect):# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! NEED TO FIX SOMEHOW !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         world.blit(sprite.image, (sprite.position[0], sprite.position[1]))
 #            sprites_on_screen.append(sprite)
 
 # adds (key, function) tuple to a list
 # if the key is held/pressed the function will run once
-def add_key_held_function(key, function_to_add):
+def add_key_held_function(key, function_to_add:function):
     pass
 
 # adds (key, function) tuple to a list
 # if the key is held/pressed the function will run once EVERY FRAME
-def add_key_held_repeating_function(key, function_to_add):
+def add_key_held_repeating_function(key, function_to_add:function):
     pass
 
 
@@ -231,11 +225,10 @@ while True:
     
     player.update_position(player_update_x, player_update_y)
 
-    scaled_game_camera.position = player.position
+    scaled_game_camera.position = player.position # WONT WORK IF PLAYER IS TOO CLOSE TO EDGE OF SCREEN
     
     update_camera_position(scaled_game_camera, game_world, player)
-    update_world(game_world, scaled_game_camera, ground, [player])
-    #game_world.blit(player.image, (camera.position[0], camera.position[1]))
+    update_world(game_world, scaled_game_camera, ground, [player, Player()])
 #    update_camera(game_camera, [ground, player])
     update_screen(game_screen, scaled_game_camera)
 
