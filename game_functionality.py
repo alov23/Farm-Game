@@ -20,7 +20,7 @@ clock = pygame.time.Clock()
 class Camera(pygame.Surface):
     def __init__(self, width, height):
         super().__init__((width, height))
-        self.position = [0, 0]
+        #self.position = [0, 0]
         self.rect = pygame.Rect((0, 0), (width, height))
 
 game_camera = Camera(WINDOW_SIZE[0], WINDOW_SIZE[1])
@@ -123,11 +123,20 @@ def update_camera_position(camera:Camera, world:World, player:Player):
         )
     
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    print(f"({world_x_offset}, {world_y_offset}) - {scaled_game_camera.rect.size} - {world_x_offset + scaled_game_camera.rect.size[0]} - {ground.rect.size}")
+    #print(f"({world_x_offset}, {world_y_offset}) - {scaled_game_camera.rect.size} - {world_x_offset + scaled_game_camera.rect.size[0]} - {ground.rect.size} - {scaled_game_camera.position}")
+    print((player_x) - (camera_w / 2),end="")
     if world_x_offset > 0:
+        print(" : true",end="")
         world_x_offset = 0
+    elif player_x + (player_w / 2) + (camera_w / 2) > world.get_width():
+        world_x_offset = -(world.get_width() - (camera_w))
+    #print(f"{world_x_offset} - {camera_w} - {player_x} - {world.get_width()}")
     #elif world_x_offset + scaled_game_camera.rect.size[0] < ground.rect.width:
     #    world_x_offset = ground.rect.width - scaled_game_camera.rect.size[0]
+    print()
+
+    if world_y_offset > 0:
+        world_y_offset = 0
 
 
     camera.blit(world, (world_x_offset, world_y_offset))
@@ -178,73 +187,78 @@ def update_world(world:World, camera:Camera, ground:Ground, sprites:list):
 
 # adds (key, function) tuple to a list
 # if the key is held/pressed the function will run once
-def add_key_held_function(key, function_to_add:function):
+def add_key_held_function(key, function_to_add):
     pass
 
 # adds (key, function) tuple to a list
 # if the key is held/pressed the function will run once EVERY FRAME
-def add_key_held_repeating_function(key, function_to_add:function):
+def add_key_held_repeating_function(key, function_to_add):
     pass
 
-
-while True:
-    player_update_x, player_update_y = 0, 0
-
-    for event in pygame.event.get():
-        if event.type == QUIT:
-            pygame.quit()
-            sys.exit()
-        if event.type == KEYDOWN:
-            if event.key == K_LEFT:
-                zoom_out(game_camera, 1)
-                #CURRENT_ZOOM_LEVEL -= 1
-                #if CURRENT_ZOOM_LEVEL <= -1:
-                #    CURRENT_ZOOM_LEVEL = len(config.ZOOM_LEVELS)-1
-                #config.CAMERA_ZOOM_AMOUNT = config.ZOOM_LEVELS[CURRENT_ZOOM_LEVEL][0]
-                #config.UPDATE_SCREEN_DIV_DENOM = config.ZOOM_LEVELS[CURRENT_ZOOM_LEVEL][1]
-            if event.key == K_RIGHT:
-                zoom_in(game_camera, 1)
-                #CURRENT_ZOOM_LEVEL += 1
-                #if CURRENT_ZOOM_LEVEL >= len(config.ZOOM_LEVELS):
-                #    CURRENT_ZOOM_LEVEL = 0
-                #config.CAMERA_ZOOM_AMOUNT = config.ZOOM_LEVELS[CURRENT_ZOOM_LEVEL][0]
-                #config.UPDATE_SCREEN_DIV_DENOM = config.ZOOM_LEVELS[CURRENT_ZOOM_LEVEL][1]
-
-    pressed_keys = pygame.key.get_pressed()
-    if pressed_keys[K_w]:
-        player_update_y -= config.MOVEMENT_SPEED_VARIABLE
-    if pressed_keys[K_s]:
-        player_update_y += config.MOVEMENT_SPEED_VARIABLE
-    if pressed_keys[K_a]:
-        player_update_x -= config.MOVEMENT_SPEED_VARIABLE
-    if pressed_keys[K_d]:
-        player_update_x += config.MOVEMENT_SPEED_VARIABLE
-    if pressed_keys[K_LSHIFT]:
-        player_update_x *= config.MOVEMENT_SPEED_RUN_MULTIPLIER
-        player_update_y *= config.MOVEMENT_SPEED_RUN_MULTIPLIER
+def game_test():
+    while True:
+        player_update_x, player_update_y = 0, 0
     
-    player.update_position(player_update_x, player_update_y)
-
-    scaled_game_camera.position = player.position # WONT WORK IF PLAYER IS TOO CLOSE TO EDGE OF SCREEN
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN:
+                if event.key == K_LEFT:
+                    zoom_out(game_camera, 1)
+                    #CURRENT_ZOOM_LEVEL -= 1
+                    #if CURRENT_ZOOM_LEVEL <= -1:
+                    #    CURRENT_ZOOM_LEVEL = len(config.ZOOM_LEVELS)-1
+                    #config.CAMERA_ZOOM_AMOUNT = config.ZOOM_LEVELS[CURRENT_ZOOM_LEVEL][0]
+                    #config.UPDATE_SCREEN_DIV_DENOM = config.ZOOM_LEVELS[CURRENT_ZOOM_LEVEL][1]
+                if event.key == K_RIGHT:
+                    zoom_in(game_camera, 1)
+                    #CURRENT_ZOOM_LEVEL += 1
+                    #if CURRENT_ZOOM_LEVEL >= len(config.ZOOM_LEVELS):
+                    #    CURRENT_ZOOM_LEVEL = 0
+                    #config.CAMERA_ZOOM_AMOUNT = config.ZOOM_LEVELS[CURRENT_ZOOM_LEVEL][0]
+                    #config.UPDATE_SCREEN_DIV_DENOM = config.ZOOM_LEVELS[CURRENT_ZOOM_LEVEL][1]
     
-    update_camera_position(scaled_game_camera, game_world, player)
-    update_world(game_world, scaled_game_camera, ground, [player, Player()])
-#    update_camera(game_camera, [ground, player])
-    update_screen(game_screen, scaled_game_camera)
+        pressed_keys = pygame.key.get_pressed()
+        if pressed_keys[K_w]:
+            player_update_y -= config.MOVEMENT_SPEED_VARIABLE
+        if pressed_keys[K_s]:
+            player_update_y += config.MOVEMENT_SPEED_VARIABLE
+        if pressed_keys[K_a]:
+            player_update_x -= config.MOVEMENT_SPEED_VARIABLE
+        if pressed_keys[K_d]:
+            player_update_x += config.MOVEMENT_SPEED_VARIABLE
+        if pressed_keys[K_LSHIFT]:
+            player_update_x *= config.MOVEMENT_SPEED_RUN_MULTIPLIER
+            player_update_y *= config.MOVEMENT_SPEED_RUN_MULTIPLIER
+        
+        player.update_position(player_update_x, player_update_y)
+    
+        #scaled_game_camera.position = player.position # WONT WORK IF PLAYER IS TOO CLOSE TO EDGE OF SCREEN
+    
+        #scaled_game_camera.position[0] = 0
+        
+        update_camera_position(scaled_game_camera, game_world, player)
+        update_world(game_world, scaled_game_camera, ground, [player, Player()])
+    #    update_camera(game_camera, [ground, player])
+        update_screen(game_screen, scaled_game_camera)
+    
+        #print(scaled_game_camera.position)
+        #print(f"zoom: {config.CAMERA_ZOOM_AMOUNT} - ({config.CAMERA_AREA_WIDTH_MODIFIER}, {config.CAMERA_AREA_HEIGHT_MODIFIER})", end="")
+    
+        #if (scaled_game_camera.get_width() % ((DISPLAY_SIZE[0] *7)/8)/config.CAMERA_ZOOM_AMOUNT == 0 and scaled_game_camera.get_height() % (( ((DISPLAY_SIZE[0]/16)*9) *7)/8)/config.CAMERA_ZOOM_AMOUNT == 0):
+        #    print(f" - true!")
+        #else:
+        #    print(f" - {((DISPLAY_SIZE[0] *7)/8)/config.CAMERA_ZOOM_AMOUNT}, {(( ((DISPLAY_SIZE[0]/16)*9) *7)/8)/config.CAMERA_ZOOM_AMOUNT}")
+    
+        pygame.display.flip()
+        clock.tick(60)
 
-    #print(scaled_game_camera.position)
-    #print(f"zoom: {config.CAMERA_ZOOM_AMOUNT} - ({config.CAMERA_AREA_WIDTH_MODIFIER}, {config.CAMERA_AREA_HEIGHT_MODIFIER})", end="")
-
-    #if (scaled_game_camera.get_width() % ((DISPLAY_SIZE[0] *7)/8)/config.CAMERA_ZOOM_AMOUNT == 0 and scaled_game_camera.get_height() % (( ((DISPLAY_SIZE[0]/16)*9) *7)/8)/config.CAMERA_ZOOM_AMOUNT == 0):
-    #    print(f" - true!")
-    #else:
-    #    print(f" - {((DISPLAY_SIZE[0] *7)/8)/config.CAMERA_ZOOM_AMOUNT}, {(( ((DISPLAY_SIZE[0]/16)*9) *7)/8)/config.CAMERA_ZOOM_AMOUNT}")
-
-    pygame.display.flip()
-    clock.tick(60)
+game_test()
 
 # notes
 #screen = pygame.display.set_mode((75*16, 75*9)) # can change window size like this
+# player.position is the top right corner of player sprite - might want to fix by adding half of sprite width / height to respective position values
 
 
 #                  Crops json layout
