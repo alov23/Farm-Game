@@ -117,26 +117,27 @@ def update_camera_position(camera:Camera, world:World, player:Player):
 
     #world_x_offset, world_y_offset = (0, 0)
     # the lower the number the farther it moves the camera from the top left
-    world_x_offset, world_y_offset = (
-        ( (-(player_x)) - (player_w / 2) ) + (camera_w / 2),
-        ( (-(player_y)) - (player_h / 2) ) + (camera_h / 2)
-        )
+    #world_x_offset, world_y_offset = (
+    #    ( (-(player_x)) - (player_w / 2) ) + (camera_w / 2),
+    #    ( (-(player_y)) - (player_h / 2) ) + (camera_h / 2)
+    #    )
+    world_x_offset = ( (-(player_x)) - (player_w / 2) ) + (camera_w / 2)
+    world_y_offset = ( (-(player_y)) - (player_h / 2) ) + (camera_h / 2)
     
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     #print(f"({world_x_offset}, {world_y_offset}) - {scaled_game_camera.rect.size} - {world_x_offset + scaled_game_camera.rect.size[0]} - {ground.rect.size} - {scaled_game_camera.position}")
-    print((player_x) - (camera_w / 2),end="")
-    if world_x_offset > 0:
-        print(" : true",end="")
+    if ( (-(player_x)) - (player_w / 2) ) + (camera_w / 2) > 0:
         world_x_offset = 0
     elif player_x + (player_w / 2) + (camera_w / 2) > world.get_width():
         world_x_offset = -(world.get_width() - (camera_w))
     #print(f"{world_x_offset} - {camera_w} - {player_x} - {world.get_width()}")
     #elif world_x_offset + scaled_game_camera.rect.size[0] < ground.rect.width:
     #    world_x_offset = ground.rect.width - scaled_game_camera.rect.size[0]
-    print()
 
-    if world_y_offset > 0:
+    if ( (-(player_y)) - (player_h / 2) ) + (camera_h / 2) > 0:
         world_y_offset = 0
+    elif player_y + (player_h / 2) + (camera_h / 2) > world.get_height():
+        world_y_offset = -(world.get_height() - (camera_h))
 
 
     camera.blit(world, (world_x_offset, world_y_offset))
