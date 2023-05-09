@@ -34,7 +34,7 @@ def scale(old_surface:pygame.Surface, new_width:int, new_height:int):
 
 class Ground(pygame.Surface, pygame.sprite.Sprite):
     def __init__(self):
-        self.image = pygame.image.load("sprites/ground.png")
+        self.image = pygame.image.load("map/sprites/ground.png")
         super().__init__((self.image.get_width(), self.image.get_height()))
         self.position = [0, 0]
         self.rect = pygame.Rect(self.position[0], self.position[1], self.image.get_width(), self.image.get_height())
