@@ -22,3 +22,7 @@ game_functionality.game()
 # ]
 # = player has to finish the map-specific conditions 1, 3, and 4 before this spot is availabe
 # can use for things like plant spots inside a greenhouse that has to be built
+#
+# !!!!!!!!!!!!!!!!!!!!!!!!!!! OTHER OPTION !!!!!!!!!!!!!!!!!!!!!!!!!!!
+# 
+# Have another image the same size as ground.png with colored sections for barriers and crop spots
