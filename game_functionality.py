@@ -196,7 +196,7 @@ def add_key_held_function(key, function_to_add):
 def add_key_held_repeating_function(key, function_to_add):
     pass
 
-def game_test():
+def play_game():
     while True:
         player_update_x, player_update_y = 0, 0
     
@@ -255,7 +255,7 @@ def game_test():
         pygame.display.flip()
         clock.tick(60)
 
-game_test()
+#play_game()
 
 # notes
 #screen = pygame.display.set_mode((75*16, 75*9)) # can change window size like this
