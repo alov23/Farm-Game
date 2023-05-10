@@ -14,7 +14,6 @@ print(f"WINDOW_SIZE[1]: {WINDOW_SIZE[1]}") # print window height
 game_screen = pygame.display.set_mode(tuple(WINDOW_SIZE))
 clock = pygame.time.Clock()
 
-#player_sprite = pygame.image.load("sprites/player.png")
 
 
 class Camera(pygame.Surface):
@@ -32,9 +31,10 @@ def scale(old_surface:pygame.Surface, new_width:int, new_height:int):
     scaled_game_camera = Camera(new_width, new_height)
     pygame.transform.scale(old_surface, (new_width, new_height), scaled_game_camera)
 
+
 class Ground(pygame.Surface, pygame.sprite.Sprite):
     def __init__(self):
-        self.image = pygame.image.load("map/sprites/ground.png")
+        self.image = pygame.image.load("map/img/ground.png")
         super().__init__((self.image.get_width(), self.image.get_height()))
         self.position = [0, 0]
         self.rect = pygame.Rect(self.position[0], self.position[1], self.image.get_width(), self.image.get_height())
@@ -87,6 +87,7 @@ class Player(pygame.Surface, pygame.sprite.Sprite):
 player = Player()
 
 
+
 def set_zoom_level(camera:Camera, newZoomLevel:int):
     if (newZoomLevel > 1):
         config.CAMERA_ZOOM_AMOUNT = newZoomLevel
@@ -108,6 +109,7 @@ def zoom_out(camera:Camera, zoomAmount:int):
     set_zoom_level(camera, config.CAMERA_ZOOM_AMOUNT - zoomAmount)
 
 
+
 def update_camera_position(camera:Camera, world:World, player:Player):
     camera.fill((150, 150, 150))
 
@@ -115,12 +117,7 @@ def update_camera_position(camera:Camera, world:World, player:Player):
     player_x, player_y = player.position
     camera_w, camera_h = camera.get_rect().size
 
-    #world_x_offset, world_y_offset = (0, 0)
     # the lower the number the farther it moves the camera from the top left
-    #world_x_offset, world_y_offset = (
-    #    ( (-(player_x)) - (player_w / 2) ) + (camera_w / 2),
-    #    ( (-(player_y)) - (player_h / 2) ) + (camera_h / 2)
-    #    )
     world_x_offset = ( (-(player_x)) - (player_w / 2) ) + (camera_w / 2)
     world_y_offset = ( (-(player_y)) - (player_h / 2) ) + (camera_h / 2)
     
@@ -141,59 +138,37 @@ def update_camera_position(camera:Camera, world:World, player:Player):
 
 
     camera.blit(world, (world_x_offset, world_y_offset))
-#
-#    ------------------------------------- change all this to change world_offset variables instead of setting camera.position -------------------------------------
-#    this stuff makes it so the camera wont show stuff thats out of bounds
-#
-#    if camera_x < 0:
-#        camera.position[0] = 0
-#    elif camera_x > ground.rect.width - WINDOW_SIZE[0]:
-#        camera.position[0] = ground.rect.width - WINDOW_SIZE[0]
-#    else:
-#        camera.position[0] = camera_x
-#    
-#    if camera_y < 0:
-#        camera.position[1] = 0
-#    elif camera_y > ground.rect.height - WINDOW_SIZE[1]:
-#        camera.position[1] = ground.rect.height - WINDOW_SIZE[1]
-#    else:
-#        camera.position[1] = camera_y
 
+class Interactable(pygame.Surface):
+    def __init__(self):
+        self.player_touching = False
 
-
+# draws the scaled camera view on screen
 def update_screen(screen:pygame.Surface, camera:Camera):
-    #print(camera.get_width())
-    #print(camera.get_width() / 1, end=" - ")
-    #print(f"({camera.get_width()} -> ({scaled_game_camera.get_width()}), {camera.get_height()} -> ({scaled_game_camera.get_height()}))", end=" - ")
-    #screen.blit(
-    #    pygame.transform.scale(camera, (camera.get_width()*config.CAMERA_ZOOM_AMOUNT, camera.get_height()*config.CAMERA_ZOOM_AMOUNT)),
-    #    (config.CAMERA_AREA_WIDTH_MODIFIER, config.CAMERA_AREA_HEIGHT_MODIFIER)
-    #    )
     screen.blit(
         pygame.transform.scale(camera, (camera.get_width()*config.CAMERA_ZOOM_AMOUNT, camera.get_height()*config.CAMERA_ZOOM_AMOUNT)),
         (0, 0)
         )
-    #screen.blit(camera, (0, 0))
 
+# draws sprites and ground
 def update_world(world:World, camera:Camera, ground:Ground, sprites:list):
     world.fill((150, 150, 150))
-#    sprites_on_screen = []
 
     world.blit(ground.image, (0, 0))
 
     for sprite in sprites:
+        # want to use this \/ because maybe only render stuff that is visible???
         #if sprite.rect.colliderect(camera.rect):# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! NEED TO FIX SOMEHOW !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         world.blit(sprite.image, (sprite.position[0], sprite.position[1]))
-#            sprites_on_screen.append(sprite)
 
 # adds (key, function) tuple to a list
 # if the key is held/pressed the function will run once
-def add_key_held_function(key, function_to_add):
+def assign_function_to_key(key, function_to_add):
     pass
 
 # adds (key, function) tuple to a list
 # if the key is held/pressed the function will run once EVERY FRAME
-def add_key_held_repeating_function(key, function_to_add):
+def assign_repeating_function_to_key(key, function_to_add):
     pass
 
 def game():
@@ -207,18 +182,8 @@ def game():
             if event.type == KEYDOWN:
                 if event.key == K_LEFT:
                     zoom_out(game_camera, 1)
-                    #CURRENT_ZOOM_LEVEL -= 1
-                    #if CURRENT_ZOOM_LEVEL <= -1:
-                    #    CURRENT_ZOOM_LEVEL = len(config.ZOOM_LEVELS)-1
-                    #config.CAMERA_ZOOM_AMOUNT = config.ZOOM_LEVELS[CURRENT_ZOOM_LEVEL][0]
-                    #config.UPDATE_SCREEN_DIV_DENOM = config.ZOOM_LEVELS[CURRENT_ZOOM_LEVEL][1]
                 if event.key == K_RIGHT:
                     zoom_in(game_camera, 1)
-                    #CURRENT_ZOOM_LEVEL += 1
-                    #if CURRENT_ZOOM_LEVEL >= len(config.ZOOM_LEVELS):
-                    #    CURRENT_ZOOM_LEVEL = 0
-                    #config.CAMERA_ZOOM_AMOUNT = config.ZOOM_LEVELS[CURRENT_ZOOM_LEVEL][0]
-                    #config.UPDATE_SCREEN_DIV_DENOM = config.ZOOM_LEVELS[CURRENT_ZOOM_LEVEL][1]
     
         pressed_keys = pygame.key.get_pressed()
         if pressed_keys[K_w]:
@@ -240,7 +205,7 @@ def game():
         #scaled_game_camera.position[0] = 0
         
         update_camera_position(scaled_game_camera, game_world, player)
-        update_world(game_world, scaled_game_camera, ground, [player, Player()])
+        update_world(game_world, scaled_game_camera, ground, [player])
     #    update_camera(game_camera, [ground, player])
         update_screen(game_screen, scaled_game_camera)
     
