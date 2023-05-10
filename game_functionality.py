@@ -139,10 +139,6 @@ def update_camera_position(camera:Camera, world:World, player:Player):
 
     camera.blit(world, (world_x_offset, world_y_offset))
 
-class Interactable(pygame.Surface):
-    def __init__(self):
-        self.player_touching = False
-
 # draws the scaled camera view on screen
 def update_screen(screen:pygame.Surface, camera:Camera):
     screen.blit(
@@ -170,6 +166,14 @@ def assign_function_to_key(key, function_to_add):
 # if the key is held/pressed the function will run once EVERY FRAME
 def assign_repeating_function_to_key(key, function_to_add):
     pass
+
+
+
+class Interactable(pygame.Surface):
+    def __init__(self):
+        self.player_touching = False
+
+
 
 def game():
     while True:
