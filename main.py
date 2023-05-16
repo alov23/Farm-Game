@@ -8,23 +8,15 @@ class Crop(pygame.Surface, pygame.sprite.Sprite):
         self.image = pygame.image.load(f"sprites/crops/{crop_image_name}.png")
         super().__init__((self.image.get_width(), self.image.get_height()))
 
-game_functionality.Animateable({"waving":[pygame.image.load("crops/wheat/anim_img_states/waving/img1.png"), pygame.image.load("")]})
+# format: {"name_of_animation_state": (
+#             fps,
+#             pygame.image.load("path/to/spritesheet.png")
+#         )}
+#try:
+test_animated = game_functionality.Animateable_Sprite({"waving": (1, pygame.image.load("crops/wheat/anim_spritesheets/waving.png"))})
+#except Exception as e:
+#    log = open("log.txt", "w")
+#    log.write(str(e))
+#    log.close()
 
-game_functionality.game()
-
-# read from crop_locations.json to find places player can interact with to place crops
-# [
-#     (100, 200)
-# ]
-# = player can place a crop at x = 100, y = 200
-#
-# potentially have unlock conditions, also maybe just numbered for ease of modification
-# [
-#    ((100, 200), [1, 3, 4])
-# ]
-# = player has to finish the map-specific conditions 1, 3, and 4 before this spot is availabe
-# can use for things like plant spots inside a greenhouse that has to be built
-#
-# !!!!!!!!!!!!!!!!!!!!!!!!!!! OTHER OPTION !!!!!!!!!!!!!!!!!!!!!!!!!!!
-# 
-# Have another image the same size as ground.png with colored sections for barriers and crop spots
+game_functionality.game(test_animated)

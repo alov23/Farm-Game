@@ -57,12 +57,44 @@ class Interactable(pygame.Surface):
         self.player_touching = False
 
 
-class Animateable():
-    def __init__(self, states:dict):
-        self.states = states
-        print(states.values)
-        self.current_state = states.values[0]
+# format: {"name_of_animation_state": (
+#             fps,
+#             pygame.image.load("path/to/spritesheet.png")
+#         )}
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!! EVERY SPRITE MUST BE 32x32 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+class Animateable_Sprite():
+    def __init__(self, states_in:dict):
+        self.states = dict()
+        #print(list(states_in.keys()))
+        #print(list(states_in.values()))
+        #print(list(states_in.values())[0])
+        for state in states_in:
+            self.fps = list(states_in.values())[0][0]
+            self.frames = []
+            #log = open("log.txt", "a")
+            #log.write("-----------------\n")
+            for i in range(int(list(states_in.values())[0][1].get_width() / 32)):
+                self.frames.append(pygame.Surface.subsurface(list(states_in.values())[0][1], ((i)*32, 0, 32, 32)))
+            #log.write(state + "\n")
+            self.states[state] = (self.fps, self.frames)
+            #log.write(str(self.states[state]) + "\n")
+            #log.close()
+        self.current_state = list(states_in.keys())[0]
         self.current_frame = 0
+        self.image = self.states[self.current_state][1][self.current_frame]
+        self.position = (0, 0)
+    
+    # proceeds to next frame, or back to first frame if at end of animation
+    @staticmethod
+    def next_frame(self):
+        if self.current_frame > len(self.states[self.current_state]):
+            self.current_frame = 0
+        else:
+            self.current_frame += 1
+        self.image = self.states[self.current_state][1][self.current_frame]
+    
+    def get_image(self):
+        return self.states[self.current_state][1][self.current_frame]
 
 
 
@@ -186,7 +218,7 @@ def assign_repeating_function_to_key(key, function_to_add):
 
 
 
-def game():
+def game(test_animated):
     while True:
         player_update_x, player_update_y = 0, 0
     
@@ -220,7 +252,7 @@ def game():
         #scaled_game_camera.position[0] = 0
         
         update_camera_position(scaled_game_camera, game_world, player)
-        update_world(game_world, scaled_game_camera, ground, [player])
+        update_world(game_world, scaled_game_camera, ground, [player, test_animated])
     #    update_camera(game_camera, [ground, player])
         update_screen(game_screen, scaled_game_camera)
     
