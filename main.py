@@ -13,7 +13,7 @@ class Crop(pygame.Surface, pygame.sprite.Sprite):
 #             pygame.image.load("path/to/spritesheet.png")
 #         )}
 #try:
-test_animated = game_framework.Animateable_Sprite({"waving": (10, pygame.image.load("crops/wheat/anim_spritesheets/waving.png"))}, (500, 500))
+test_animated = game_framework.Animateable_Sprite({"waving": (10, pygame.image.load("crops/wheat/anim_spritesheets/waving.png"))}, (700, 390))
 #except Exception as e:
 #    log = open("log.txt", "w")
 #    log.write(str(e))
