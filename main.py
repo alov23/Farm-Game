@@ -8,6 +8,8 @@ class Crop(pygame.Surface, pygame.sprite.Sprite):
         self.image = pygame.image.load(f"sprites/crops/{crop_image_name}.png")
         super().__init__((self.image.get_width(), self.image.get_height()))
 
+game_functionality.Animateable({"waving":[pygame.image.load("crops/wheat/anim_img_states/waving/img1.png"), pygame.image.load("")]})
+
 game_functionality.game()
 
 # read from crop_locations.json to find places player can interact with to place crops

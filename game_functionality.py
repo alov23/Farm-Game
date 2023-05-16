@@ -52,9 +52,23 @@ game_world = World(ground.get_width(), ground.get_height())
 
 
 
+class Interactable(pygame.Surface):
+    def __init__(self):
+        self.player_touching = False
+
+
+class Animateable():
+    def __init__(self, states:dict):
+        self.states = states
+        print(states.values)
+        self.current_state = states.values[0]
+        self.current_frame = 0
+
+
+
 class Player(pygame.Surface, pygame.sprite.Sprite):
     def __init__(self):
-        self.image = pygame.image.load("sprites/player.png")
+        self.image = pygame.image.load("player/img/player.png")
         super().__init__((self.image.get_width(), self.image.get_height()))
         self.position = [
             (ground.get_width() / 2) - (self.image.get_width() / 2),
@@ -157,6 +171,9 @@ def update_world(world:World, camera:Camera, ground:Ground, sprites:list):
         #if sprite.rect.colliderect(camera.rect):# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! NEED TO FIX SOMEHOW !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         world.blit(sprite.image, (sprite.position[0], sprite.position[1]))
 
+
+
+
 # adds (key, function) tuple to a list
 # if the key is held/pressed the function will run once
 def assign_function_to_key(key, function_to_add):
@@ -166,12 +183,6 @@ def assign_function_to_key(key, function_to_add):
 # if the key is held/pressed the function will run once EVERY FRAME
 def assign_repeating_function_to_key(key, function_to_add):
     pass
-
-
-
-class Interactable(pygame.Surface):
-    def __init__(self):
-        self.player_touching = False
 
 
 
