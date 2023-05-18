@@ -1,7 +1,28 @@
+from PIL import Image
 import game_framework
 from game_framework import pygame
 
 print(game_framework.WINDOW_SIZE)
+
+test_image = Image.open("crops/wheat/anim_spritesheets/waving.png")
+test_image = test_image.convert("RGBA")
+d = test_image.getdata()
+pixels = [[]]
+
+x = 0
+y = 0
+for pixel in d:
+    if x == (32*6):
+        x = 0
+        y += 1
+    print(f"{x}, {y}")
+    
+    print(f"{pixel[:3]} - {type(pixel[:3])}")
+    pixels[y].append(pixel[:3])
+    
+    x += 1
+print(pixels)
+#print(str(test_image.getdata()))
 
 class Crop(pygame.Surface, pygame.sprite.Sprite):
     def __init__(self, crop_name, crop_image_name):

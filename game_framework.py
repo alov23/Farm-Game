@@ -99,6 +99,46 @@ class Animateable_Sprite():
     def get_image(self):
         return self.states[self.current_state][1][self.current_frame]
 
+# TODO: make this use palettes for the spritesheet colors
+#       maybe make the first frame in the sprite sheet the palette?
+class Animateable_Sprite_Paletted():
+    def __init__(self, states_in:dict, pos:tuple):
+        self.states = dict()
+        #print(list(states_in.keys()))
+        #print(list(states_in.values()))
+        #print(list(states_in.values())[0])
+        for state in states_in:
+            self.frame_length = list(states_in.values())[0][0]
+            self.frames = []
+            #log = open("log.txt", "a")
+            #log.write("-----------------\n")
+            for i in range(int(list(states_in.values())[0][1].get_width() / 32)):
+                self.frames.append(pygame.Surface.subsurface(list(states_in.values())[0][1], ((i)*32, 0, 32, 32)))
+            #log.write(state + "\n")
+            self.states[state] = (self.frame_length, self.frames)
+            #log.write(str(self.states[state]) + "\n")
+            #log.close()
+        self.current_state = list(states_in.keys())[0]
+        self.current_frame = 0
+        self.frame_buffer = 0
+        self.image = self.states[self.current_state][1][self.current_frame]
+        self.position = pos
+    
+    # proceeds to next frame, or back to first frame if at end of animation
+    def next_frame(self):
+        self.frame_buffer += 1
+        if self.frame_buffer+1 > self.states[self.current_state][0]:
+            if self.current_frame+1 == len(self.states[self.current_state][1]):
+                self.current_frame = 0
+            else:
+                self.current_frame += 1
+            self.image = self.states[self.current_state][1][self.current_frame]
+            self.frame_buffer = 0
+    
+    def get_image(self):
+        return self.states[self.current_state][1][self.current_frame]
+
+
 
 
 class Player(pygame.Surface, pygame.sprite.Sprite):
@@ -117,7 +157,7 @@ class Player(pygame.Surface, pygame.sprite.Sprite):
     
     # moves sprite when frame updates
     def update_position(self, update_x, update_y):
-        # add code here to change sprite based on direction player is facing
+        # TODO: add code here to change sprite based on direction player is facing
         
         if self.position[0] + update_x < 0:
             self.position[0] = 0
@@ -170,15 +210,10 @@ def update_camera_position(camera:Camera, world:World, player:Player):
     world_x_offset = ( (-(player_x)) - (player_w / 2) ) + (camera_w / 2)
     world_y_offset = ( (-(player_y)) - (player_h / 2) ) + (camera_h / 2)
     
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    #print(f"({world_x_offset}, {world_y_offset}) - {scaled_game_camera.rect.size} - {world_x_offset + scaled_game_camera.rect.size[0]} - {ground.rect.size} - {scaled_game_camera.position}")
     if ( (-(player_x)) - (player_w / 2) ) + (camera_w / 2) > 0:
         world_x_offset = 0
     elif player_x + (player_w / 2) + (camera_w / 2) > world.get_width():
         world_x_offset = -(world.get_width() - (camera_w))
-    #print(f"{world_x_offset} - {camera_w} - {player_x} - {world.get_width()}")
-    #elif world_x_offset + scaled_game_camera.rect.size[0] < ground.rect.width:
-    #    world_x_offset = ground.rect.width - scaled_game_camera.rect.size[0]
 
     if ( (-(player_y)) - (player_h / 2) ) + (camera_h / 2) > 0:
         world_y_offset = 0
@@ -208,7 +243,7 @@ def update_world(world:World, camera:Camera, ground:Ground, sprites:list):
 
 
 
-
+# TODO: finish these functions
 # adds (key, function) tuple to a list
 # if the key is held/pressed the function will run once
 def assign_function_to_key(key, function_to_add):
