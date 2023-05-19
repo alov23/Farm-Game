@@ -102,7 +102,7 @@ class Animateable_Sprite():
 # TODO: make this use palettes for the spritesheet colors
 #       maybe make the first frame in the sprite sheet the palette?
 class Animateable_Sprite_Paletted():
-    def __init__(self, states_in:dict, pos:tuple):
+    def __init__(self, palette, states_in:dict, pos:tuple):
         self.states = dict()
         #print(list(states_in.keys()))
         #print(list(states_in.values()))
@@ -256,7 +256,7 @@ def assign_repeating_function_to_key(key, function_to_add):
 
 
 
-def game(test_animated):
+def game(test_animated, test_paletted):
     while True:
         player_update_x, player_update_y = 0, 0
     
@@ -290,7 +290,7 @@ def game(test_animated):
         #scaled_game_camera.position[0] = 0
         
         update_camera_position(scaled_game_camera, game_world, player)
-        update_world(game_world, scaled_game_camera, ground, [player, test_animated])
+        update_world(game_world, scaled_game_camera, ground, [player, test_animated, test_paletted])
         test_animated.next_frame()
     #    update_camera(game_camera, [ground, player])
         update_screen(game_screen, scaled_game_camera)
