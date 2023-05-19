@@ -1,2 +1,3 @@
-https://stackoverflow.com/questions/68111482/is-saving-pil-images-after-modifying-necessary
-https://www.geeksforgeeks.org/how-to-convert-pil-image-into-pygame-surface-image/#
+    https://stackoverflow.com/questions/68111482/is-saving-pil-images-after-modifying-necessary
+    https://www.geeksforgeeks.org/how-to-convert-pil-image-into-pygame-surface-image/#
+!!! https://stackoverflow.com/questions/36468530/changing-pixel-color-value-in-pil
